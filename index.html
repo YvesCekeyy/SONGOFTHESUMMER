@@ -1,1004 +1,126 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>JENNIE — Song of Summer Voting Hub</title>
-
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      min-height: 100vh;
-      font-family: Arial, Helvetica, sans-serif;
-
-      background:
-        radial-gradient(circle at top left, #3b102c 0%, transparent 35%),
-        radial-gradient(circle at bottom right, #15154a 0%, transparent 35%),
-        #08080d;
-
-      color: #fff;
-      padding: 24px 14px 50px;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 720px;
-      margin: auto;
-    }
-
-    /* HEADER */
-
-    .header {
-      text-align: center;
-      padding: 20px 10px 28px;
-    }
-
-    .header .mini {
-      color: #ff79c8;
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      margin-bottom: 10px;
-    }
-
-    .header h1 {
-      font-size: clamp(32px, 9vw, 62px);
-      letter-spacing: -2px;
-      line-height: .95;
-    }
-
-    .header h1 span {
-      color: #ff62bb;
-    }
-
-    .header p {
-      margin-top: 13px;
-      color: #bdbdcc;
-      font-size: 14px;
-    }
-
-    /* CARDS */
-
-    .card {
-      background: rgba(20, 20, 29, .92);
-      border: 1px solid #333342;
-      border-radius: 18px;
-      padding: 20px;
-      margin-bottom: 15px;
-
-      box-shadow:
-        0 12px 35px rgba(0,0,0,.25);
-    }
-
-    .song-card {
-      border-color: #70365d;
-      text-align: center;
-    }
-
-    .category {
-      color: #ff70c2;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-
-    .song-title {
-      font-size: 25px;
-      font-weight: 900;
-      margin-top: 9px;
-    }
-
-    .artist {
-      color: #aaaaba;
-      margin-top: 5px;
-      font-size: 14px;
-    }
-
-    /* BUTTONS */
-
-    button,
-    .link-button {
-      border: 0;
-      border-radius: 11px;
-      padding: 13px 15px;
-      font-size: 13px;
-      font-weight: 800;
-      cursor: pointer;
-
-      text-align: center;
-      text-decoration: none;
-
-      transition: .15s ease;
-    }
-
-    .vote-btn {
-      background: #ff5fba;
-      color: #130810;
-      display: block;
-      width: 100%;
-      margin-top: 20px;
-    }
-
-    .vote-btn:hover {
-      transform: translateY(-2px);
-      filter: brightness(1.1);
-    }
-
-    .secondary {
-      background: #282833;
-      color: #fff;
-      border: 1px solid #414151;
-    }
-
-    .secondary:hover {
-      background: #343440;
-    }
-
-    /* SESSION SETTING */
-
-    .setting-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 15px;
-
-      background: #111118;
-      border: 1px solid #2c2c38;
-      border-radius: 12px;
-
-      padding: 13px;
-      margin-top: 15px;
-    }
-
-    .setting-label {
-      font-size: 12px;
-      color: #bdbdcc;
-    }
-
-    .setting-label strong {
-      display: block;
-      color: #fff;
-      margin-bottom: 3px;
-    }
-
-    .vote-limit {
-      width: 80px;
-      background: #101017;
-      color: #fff;
-      border: 1px solid #3b3b49;
-      border-radius: 8px;
-      padding: 9px;
-      text-align: center;
-      font-weight: 800;
-      outline: none;
-    }
-
-    .vote-limit:focus {
-      border-color: #ff62bb;
-    }
-
-    /* STATS */
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 9px;
-    }
-
-    .stat {
-      background: #111118;
-      border: 1px solid #2c2c38;
-      border-radius: 13px;
-      padding: 15px 8px;
-      text-align: center;
-    }
-
-    .stat-number {
-      font-size: 25px;
-      font-weight: 900;
-      color: #ff72c3;
-    }
-
-    .stat-label {
-      margin-top: 5px;
-      color: #9292a4;
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: .8px;
-    }
-
-    /* SECTION TITLES */
-
-    .section-title {
-      font-size: 14px;
-      font-weight: 900;
-      margin-bottom: 13px;
-      letter-spacing: .5px;
-    }
-
-    /* ACCOUNTS */
-
-    .account-input-row {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 15px;
-    }
-
-    .account-input {
-      flex: 1;
-      min-width: 0;
-
-      background: #101017;
-      border: 1px solid #30303d;
-      border-radius: 11px;
-
-      padding: 13px;
-      color: #fff;
-
-      outline: none;
-      font-family: inherit;
-    }
-
-    .account-input:focus {
-      border-color: #ff62bb;
-    }
-
-    .add-btn {
-      background: #ff5fba;
-      color: #130810;
-      white-space: nowrap;
-    }
-
-    .account-list {
-      display: grid;
-      gap: 10px;
-    }
-
-    .account-item {
-      background: #111118;
-      border: 1px solid #2c2c38;
-      border-radius: 13px;
-      padding: 13px;
-    }
-
-    .account-item.completed {
-      border-color: #70406d;
-    }
-
-    .account-top {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .account-name {
-      flex: 1;
-      min-width: 0;
-
-      color: #fff;
-      font-size: 14px;
-      font-weight: 800;
-
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .delete-btn {
-      background: transparent;
-      color: #777783;
-      padding: 4px 7px;
-      font-size: 17px;
-    }
-
-    .delete-btn:hover {
-      color: #ff7070;
-    }
-
-    /* ACCOUNT PROGRESS */
-
-    .account-progress {
-      margin-top: 11px;
-    }
-
-    .progress-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-
-      color: #aaaaba;
-      font-size: 11px;
-      margin-bottom: 6px;
-    }
-
-    .progress-count {
-      color: #ff79c8;
-      font-weight: 800;
-    }
-
-    .progress-bar {
-      height: 7px;
-      background: #24242e;
-      border-radius: 20px;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      height: 100%;
-      width: 0%;
-      background: #ff62bb;
-      border-radius: 20px;
-      transition: width .25s ease;
-    }
-
-    .account-status {
-      margin-top: 8px;
-      font-size: 10px;
-      color: #777783;
-    }
-
-    .account-status.completed {
-      color: #ff8bd0;
-    }
-
-    .account-actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-top: 12px;
-    }
-
-    .open-account-btn {
-      background: #282833;
-      color: #fff;
-      border: 1px solid #414151;
-    }
-
-    .complete-btn {
-      background: #ff5fba;
-      color: #130810;
-    }
-
-    .complete-btn.completed {
-      background: #4b2850;
-      color: #ff8bd0;
-      border: 1px solid #70406d;
-    }
-
-    .empty {
-      color: #777783;
-      font-size: 12px;
-      text-align: center;
-      padding: 15px 5px;
-    }
-
-    .account-summary {
-      color: #9292a4;
-      font-size: 11px;
-      text-align: right;
-      margin-top: 12px;
-    }
-
-    /* CHECKLIST */
-
-    .checklist {
-      display: grid;
-      gap: 9px;
-    }
-
-    .check {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-
-      padding: 11px;
-
-      background: #111118;
-      border-radius: 10px;
-
-      color: #c8c8d3;
-      font-size: 13px;
-    }
-
-    .check input {
-      width: 17px;
-      height: 17px;
-      accent-color: #ff62bb;
-    }
-
-    /* NOTES */
-
-    textarea {
-      width: 100%;
-      min-height: 110px;
-      resize: vertical;
-
-      background: #101017;
-      border: 1px solid #30303d;
-      border-radius: 11px;
-
-      padding: 12px;
-      color: #fff;
-
-      font-family: inherit;
-      outline: none;
-    }
-
-    textarea:focus {
-      border-color: #ff62bb;
-    }
-
-    /* RESET */
-
-    .reset {
-      width: 100%;
-      margin-top: 10px;
-
-      background: transparent;
-      color: #888896;
-
-      border: 1px solid #30303d;
-    }
-
-    .reset:hover {
-      color: #ff7070;
-      border-color: #7a3e3e;
-    }
-
-    /* NOTICE */
-
-    .notice {
-      font-size: 11px;
-      line-height: 1.6;
-
-      color: #858592;
-      text-align: center;
-
-      margin-top: 18px;
-    }
-
-    .self-reported {
-      color: #ff79c8;
-      font-weight: 800;
-    }
-
-    /* FOOTER */
-
-    .footer {
-      text-align: center;
-      color: #555562;
-
-      font-size: 10px;
-      margin-top: 25px;
-
-      letter-spacing: .5px;
-      line-height: 1.8;
-    }
-
-    .credit {
-      color: #777783;
-      font-size: 10px;
-      margin-top: 8px;
-      letter-spacing: 1px;
-    }
-
-    /* MOBILE */
-
-    @media (max-width: 450px) {
-
-      .stats {
-        grid-template-columns: 1fr 1fr 1fr;
-      }
-
-      .account-input-row {
-        flex-direction: column;
-      }
-
-      .add-btn {
-        width: 100%;
-      }
-
-      .account-actions {
-        grid-template-columns: 1fr;
-      }
-
-      .card {
-        padding: 16px;
-      }
-
-    }
-  </style>
-</head>
-
-
-<body>
-
-<main class="container">
-
-
-  <!-- HEADER -->
-
-  <header class="header">
-
-    <div class="mini">
-      BLINKS VOTING HUB
-    </div>
-
-    <h1>
-      <span>JENNIE</span> ✦
-    </h1>
-
-    <p>
-      Song of Summer — voting tracker
-    </p>
-
-  </header>
-
-
-  <!-- MAIN CARD -->
-
-  <section class="card song-card">
-
-    <div class="category">
-      2026 MTV VMAs
-    </div>
-
-    <div class="song-title">
-      Song of the Summer
-    </div>
-
-    <div class="artist">
-      JENNIE — “Dracula Remix”
-    </div>
-
-
-    <!-- MAIN MTV BUTTON -->
-
-    <a
-      class="link-button vote-btn"
-      href="https://www.instagram.com/mtv/"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      OPEN MTV INSTAGRAM
-    </a>
-
-
-    <!-- VOTES PER SESSION -->
-
-    <div class="setting-row">
-
-      <div class="setting-label">
-
-        <strong>
-          Votes per session
-        </strong>
-
-        Change this if the official voting rules
-        specify a different number.
-
-      </div>
-
-      <input
-        id="voteLimit"
-        class="vote-limit"
-        type="number"
-        min="1"
-        max="100"
-        value="20"
-      >
-
-    </div>
-
-  </section>
-
-
-  <!-- OVERALL STATS -->
-
-  <section class="card">
-
-    <div class="section-title">
-      MY VOTING PROGRESS
-    </div>
-
-
-    <div class="stats">
-
-      <div class="stat">
-
-        <div
-          class="stat-number"
-          id="totalVotes"
-        >
-          0
-        </div>
-
-        <div class="stat-label">
-          Self-Reported Votes
-        </div>
-
-      </div>
-
-
-      <div class="stat">
-
-        <div
-          class="stat-number"
-          id="totalSessions"
-        >
-          0
-        </div>
-
-        <div class="stat-label">
-          Sessions
-        </div>
-
-      </div>
-
-
-      <div class="stat">
-
-        <div
-          class="stat-number"
-          id="completedAccounts"
-        >
-          0
-        </div>
-
-        <div class="stat-label">
-          Accounts
-        </div>
-
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- ACCOUNT LIST -->
-
-  <section class="card">
-
-    <div class="section-title">
-      INSTAGRAM ACCOUNTS
-    </div>
-
-
-    <div class="account-input-row">
-
-      <input
-        id="accountInput"
-        class="account-input"
-        type="text"
-        placeholder="@username"
-        autocomplete="off"
-      >
-
-      <button
-        class="add-btn"
-        onclick="addAccount()"
-      >
-        + ADD
-      </button>
-
-    </div>
-
-
-    <div
-      id="accountList"
-      class="account-list"
-    ></div>
-
-
-    <div
-      id="accountSummary"
-      class="account-summary"
-    >
-      0 accounts
-    </div>
-
-  </section>
-
-
-  <!-- CHECKLIST -->
-
-  <section class="card">
-
-    <div class="section-title">
-      VOTING CHECKLIST
-    </div>
-
-
-    <div class="checklist">
-
-      <label class="check">
-
-        <input
-          type="checkbox"
-          data-check="official"
-        >
-
-        Opened MTV's Instagram
-
-      </label>
-
-
-      <label class="check">
-
-        <input
-          type="checkbox"
-          data-check="poll"
-        >
-
-        Found the Song of the Summer poll
-
-      </label>
-
-
-      <label class="check">
-
-        <input
-          type="checkbox"
-          data-check="jennie"
-        >
-
-        Selected JENNIE / “Dracula Remix”
-
-      </label>
-
-
-      <label class="check">
-
-        <input
-          type="checkbox"
-          data-check="submit"
-        >
-
-        Finished my voting session
-
-      </label>
-
-    </div>
-
-  </section>
-
-
-  <!-- NOTES -->
-
-  <section class="card">
-
-    <div class="section-title">
-      BLINKS' NOTES
-    </div>
-
-
-    <textarea
-      id="notes"
-      placeholder="Keep your personal voting notes here..."
-    ></textarea>
-
-
-    <button
-      class="reset"
-      onclick="resetData()"
-    >
-      RESET MY TRACKER
-    </button>
-
-  </section>
-
-
-  <!-- NOTICE -->
-
-  <p class="notice">
-
-    This is a fan-made personal voting tracker.
-
-    <br>
-
-    Vote totals are
-    <span class="self-reported">
-      self-reported
-    </span>
-    and are not independently verified by MTV.
-
-    <br>
-
-    The website does not log into Instagram,
-    switch accounts, submit votes, or automate voting.
-
-  </p>
-
-
-  <!-- FOOTER -->
-
-  <div class="footer">
-
-    JENNIE ✦ SONG OF SUMMER ✦ BLINKS
-
-    <div class="credit">
-      made by yoobi_idk X ChatGPT
-    </div>
-
-  </div>
-
-
-</main>
-
-
 <script>
+const STORAGE_KEY = "jennie_song_summer_tracker";
 
+/* =========================
+   LOAD DATA SAFELY
+========================= */
 
-/* =========================================
-   STORAGE
-========================================= */
+let data = {
+  accounts: [],
+  checks: {},
+  notes: "",
+  sessions: []
+};
 
-const STORAGE_KEY =
-  "jennie_song_summer_tracker";
+try {
+  const saved = localStorage.getItem(STORAGE_KEY);
 
+  if (saved) {
+    const parsed = JSON.parse(saved);
 
-let data = JSON.parse(
-  localStorage.getItem(STORAGE_KEY) ||
-  '{"accounts":[],"checks":{},"notes":"","sessions":[]}'
-);
+    data.accounts = Array.isArray(parsed.accounts)
+      ? parsed.accounts
+      : [];
 
+    data.checks = parsed.checks || {};
+    data.notes = parsed.notes || "";
 
-/* Compatibility with older versions */
+    data.sessions = Array.isArray(parsed.sessions)
+      ? parsed.sessions
+      : [];
+  }
+} catch (error) {
+  console.log("Could not load saved data:", error);
+}
 
-if (!data.accounts)
-  data.accounts = [];
-
-if (!data.checks)
-  data.checks = {};
-
-if (!data.notes)
-  data.notes = "";
-
-if (!data.sessions)
-  data.sessions = [];
-
-
-/* =========================================
+/* =========================
    SAVE
-========================================= */
+========================= */
 
 function save() {
-
   localStorage.setItem(
     STORAGE_KEY,
     JSON.stringify(data)
   );
-
 }
 
-
-/* =========================================
+/* =========================
    VOTE LIMIT
-========================================= */
+========================= */
 
 const voteLimitInput =
   document.getElementById("voteLimit");
 
-
-/* Restore previously selected limit */
-
 const savedLimit =
-  localStorage.getItem(
-    "jennie_vote_limit"
-  );
+  localStorage.getItem("jennie_vote_limit");
 
 if (savedLimit) {
-
-  voteLimitInput.value =
-    savedLimit;
-
+  voteLimitInput.value = savedLimit;
 }
 
+voteLimitInput.addEventListener("change", () => {
 
-voteLimitInput.addEventListener(
-  "change",
-  () => {
+  let value = parseInt(voteLimitInput.value);
 
-    let value =
-      parseInt(
-        voteLimitInput.value
-      );
+  if (!value || value < 1) value = 1;
+  if (value > 100) value = 100;
 
-    if (!value || value < 1)
-      value = 1;
+  voteLimitInput.value = value;
 
-    if (value > 100)
-      value = 100;
+  localStorage.setItem(
+    "jennie_vote_limit",
+    value
+  );
 
-    voteLimitInput.value =
-      value;
+  renderAccounts();
+  updateStats();
+});
 
-    localStorage.setItem(
-      "jennie_vote_limit",
-      value
-    );
-
-  }
-);
-
-
-/* =========================================
+/* =========================
    ADD ACCOUNT
-========================================= */
+========================= */
 
 function addAccount() {
 
   const input =
-    document.getElementById(
-      "accountInput"
-    );
+    document.getElementById("accountInput");
 
   let username =
     input.value.trim();
 
-
-  if (!username)
+  if (!username) {
+    alert("Please enter an Instagram username.");
     return;
-
+  }
 
   if (!username.startsWith("@")) {
-
-    username =
-      "@" + username;
-
+    username = "@" + username;
   }
 
-
-  const exists =
-    data.accounts.some(
-      account =>
-        account.username.toLowerCase() ===
-        username.toLowerCase()
-    );
-
+  const exists = data.accounts.some(
+    account =>
+      account.username.toLowerCase() ===
+      username.toLowerCase()
+  );
 
   if (exists) {
-
-    alert(
-      "That account is already on your list."
-    );
-
+    alert("That account is already added.");
     return;
-
   }
 
-
   data.accounts.push({
-
     id:
       Date.now().toString() +
-      Math.random()
-        .toString(36)
-        .slice(2),
+      Math.random().toString(36).slice(2),
 
-    username:
-      username,
+    username: username,
 
-    votes:
-      0,
+    votes: 0,
 
-    sessions:
-      0,
+    sessions: 0,
 
-    lastSession:
-      null
-
+    lastSession: null
   });
-
 
   input.value = "";
 
@@ -1007,55 +129,38 @@ function addAccount() {
   renderAccounts();
 
   updateStats();
-
 }
 
-
-/* =========================================
+/* =========================
    OPEN MTV
-========================================= */
+========================= */
 
 function openMTV() {
-
   window.open(
     "https://www.instagram.com/mtv/",
-    "_blank",
-    "noopener,noreferrer"
+    "_blank"
   );
-
 }
 
-
-/* =========================================
+/* =========================
    COMPLETE SESSION
-========================================= */
+========================= */
 
 function completeSession(id) {
 
   const account =
     data.accounts.find(
-      item => item.id === id
+      account => account.id === id
     );
 
-
-  if (!account)
-    return;
-
+  if (!account) return;
 
   let voteLimit =
-    parseInt(
-      voteLimitInput.value
-    );
+    parseInt(voteLimitInput.value);
 
-
-  if (!voteLimit || voteLimit < 1)
+  if (!voteLimit || voteLimit < 1) {
     voteLimit = 1;
-
-
-  /*
-    One click records the entire
-    manually completed session.
-  */
+  }
 
   account.votes += voteLimit;
 
@@ -1064,23 +169,12 @@ function completeSession(id) {
   account.lastSession =
     new Date().toISOString();
 
-
   data.sessions.push({
-
-    accountId:
-      account.id,
-
-    username:
-      account.username,
-
-    votes:
-      voteLimit,
-
-    timestamp:
-      new Date().toISOString()
-
+    accountId: account.id,
+    username: account.username,
+    votes: voteLimit,
+    timestamp: new Date().toISOString()
   });
-
 
   save();
 
@@ -1088,227 +182,355 @@ function completeSession(id) {
 
   updateStats();
 
-
   alert(
     `${voteLimit} vote${voteLimit === 1 ? "" : "s"} marked as self-reported for ${account.username}.`
   );
-
 }
 
-
-/* =========================================
+/* =========================
    DELETE ACCOUNT
-========================================= */
+========================= */
 
 function deleteAccount(id) {
 
   const account =
     data.accounts.find(
-      item => item.id === id
+      account => account.id === id
     );
 
+  if (!account) return;
 
-  if (!account)
-    return;
-
-
-  const confirmed =
-    confirm(
+  if (
+    !confirm(
       `Remove ${account.username} from your tracker?`
-    );
-
-
-  if (!confirmed)
+    )
+  ) {
     return;
-
+  }
 
   data.accounts =
     data.accounts.filter(
-      item => item.id !== id
+      account => account.id !== id
     );
-
 
   save();
 
   renderAccounts();
 
   updateStats();
-
 }
 
+/* =========================
+   ESCAPE HTML
+========================= */
 
-/* =========================================
+function escapeHTML(text) {
+
+  const div =
+    document.createElement("div");
+
+  div.textContent = text;
+
+  return div.innerHTML;
+}
+
+/* =========================
    RENDER ACCOUNTS
-========================================= */
+========================= */
 
 function renderAccounts() {
 
   const list =
-    document.getElementById(
-      "accountList"
-    );
+    document.getElementById("accountList");
 
+  const summary =
+    document.getElementById("accountSummary");
 
   list.innerHTML = "";
 
+  if (
+    !Array.isArray(data.accounts) ||
+    data.accounts.length === 0
+  ) {
 
-  if (data.accounts.length === 0) {
-
-    list.innerHTML =
-      `
+    list.innerHTML = `
       <div class="empty">
         No Instagram accounts added yet.
       </div>
-      `;
+    `;
 
-    document.getElementById(
-      "accountSummary"
-    ).textContent =
-      "0 accounts";
+    summary.textContent = "0 accounts";
 
     return;
-
   }
 
-
   const voteLimit =
-    parseInt(
-      voteLimitInput.value
-    ) || 20;
+    parseInt(voteLimitInput.value) || 20;
 
+  data.accounts.forEach(account => {
 
-  data.accounts.forEach(
-    account => {
+    const item =
+      document.createElement("div");
 
-      const item =
-        document.createElement(
-          "div"
-        );
+    item.className =
+      "account-item";
 
+    const percent =
+      Math.min(
+        100,
+        (account.votes / voteLimit) * 100
+      );
 
-      item.className =
-        "account-item" +
-        (
-          account.votes >= voteLimit
-            ? " completed"
-            : ""
-        );
+    const completed =
+      account.votes >= voteLimit;
 
+    if (completed) {
+      item.classList.add("completed");
+    }
 
-      const percent =
-        Math.min(
-          100,
-          (
-            account.votes /
-            voteLimit
-          ) * 100
-        );
+    item.innerHTML = `
 
+      <div class="account-top">
 
-      item.innerHTML = `
+        <div class="account-name">
+          ${escapeHTML(account.username)}
+        </div>
 
-        <div class="account-top">
+        <button
+          class="delete-btn"
+          title="Remove account"
+        >
+          ×
+        </button>
 
-          <div class="account-name">
-            ${escapeHTML(account.username)}
-          </div>
+      </div>
 
-          <button
-            class="delete-btn"
-            title="Remove account"
-          >
-            ×
-          </button>
+      <div class="account-progress">
+
+        <div class="progress-header">
+
+          <span>
+            Session progress
+          </span>
+
+          <span class="progress-count">
+            ${account.votes} / ${voteLimit}
+          </span>
 
         </div>
 
-
-        <div class="account-progress">
-
-          <div class="progress-header">
-
-            <span>
-              Session progress
-            </span>
-
-            <span class="progress-count">
-              ${account.votes} / ${voteLimit}
-            </span>
-
-          </div>
-
-
-          <div class="progress-bar">
-
-            <div
-              class="progress-fill"
-              style="width:${percent}%"
-            ></div>
-
-          </div>
-
+        <div class="progress-bar">
 
           <div
-            class="account-status
-              ${
-                account.votes >= voteLimit
-                  ? "completed"
-                  : ""
-              }"
-          >
-
-            ${
-              account.votes >= voteLimit
-                ? "✓ Session marked complete — self-reported"
-                : account.sessions > 0
-                  ? `${account.sessions} session${account.sessions === 1 ? "" : "s"} recorded`
-                  : "No session recorded yet"
-            }
-
-          </div>
+            class="progress-fill"
+            style="width:${percent}%"
+          ></div>
 
         </div>
 
+        <div class="account-status ${
+          completed ? "completed" : ""
+        }">
 
-        <div class="account-actions">
-
-          <a
-            class="link-button open-account-btn"
-            href="https://www.instagram.com/mtv/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            OPEN MTV
-          </a>
-
-
-          <button
-            class="complete-btn
-              ${
-                account.votes >= voteLimit
-                  ? "completed"
-                  : ""
-              }"
-          >
-
-            ${
-              account.votes >= voteLimit
-                ? "✓ SESSION RECORDED"
-                : "MARK SESSION COMPLETE"
-            }
-
-          </button>
+          ${
+            completed
+              ? "✓ Session marked complete — self-reported"
+              : account.sessions > 0
+                ? `${account.sessions} session${account.sessions === 1 ? "" : "s"} recorded`
+                : "No session recorded yet"
+          }
 
         </div>
 
-      `;
+      </div>
 
+      <div class="account-actions">
 
-      /* Delete */
+        <a
+          class="link-button open-account-btn"
+          href="https://www.instagram.com/mtv/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          OPEN MTV
+        </a>
 
-      item
-        .querySelector(
-          ".delete-btn"
-        )
-        .onclick = () =>
-          deleteAcco
+        <button
+          class="complete-btn ${
+            completed ? "completed" : ""
+          }"
+        >
+
+          ${
+            completed
+              ? "✓ SESSION RECORDED"
+              : "MARK SESSION COMPLETE"
+          }
+
+        </button>
+
+      </div>
+    `;
+
+    item
+      .querySelector(".delete-btn")
+      .onclick = () =>
+        deleteAccount(account.id);
+
+    item
+      .querySelector(".complete-btn")
+      .onclick = () =>
+        completeSession(account.id);
+
+    list.appendChild(item);
+  });
+
+  summary.textContent =
+    `${data.accounts.length} account${
+      data.accounts.length === 1 ? "" : "s"
+    }`;
+}
+
+/* =========================
+   UPDATE STATS
+========================= */
+
+function updateStats() {
+
+  let totalVotes = 0;
+  let totalSessions = 0;
+  let completedAccounts = 0;
+
+  data.accounts.forEach(account => {
+
+    totalVotes +=
+      Number(account.votes) || 0;
+
+    totalSessions +=
+      Number(account.sessions) || 0;
+
+    const voteLimit =
+      parseInt(voteLimitInput.value) || 20;
+
+    if (account.votes >= voteLimit) {
+      completedAccounts++;
+    }
+  });
+
+  document.getElementById(
+    "totalVotes"
+  ).textContent = totalVotes;
+
+  document.getElementById(
+    "totalSessions"
+  ).textContent = totalSessions;
+
+  document.getElementById(
+    "completedAccounts"
+  ).textContent =
+    completedAccounts;
+}
+
+/* =========================
+   CHECKLIST
+========================= */
+
+document
+  .querySelectorAll(
+    'input[type="checkbox"][data-check]'
+  )
+  .forEach(box => {
+
+    box.addEventListener("change", () => {
+
+      data.checks[
+        box.dataset.check
+      ] = box.checked;
+
+      save();
+    });
+  });
+
+/* =========================
+   NOTES
+========================= */
+
+document
+  .getElementById("notes")
+  .addEventListener("input", event => {
+
+    data.notes = event.target.value;
+
+    save();
+  });
+
+/* =========================
+   ENTER KEY
+========================= */
+
+document
+  .getElementById("accountInput")
+  .addEventListener("keydown", event => {
+
+    if (event.key === "Enter") {
+      addAccount();
+    }
+  });
+
+/* =========================
+   RESET
+========================= */
+
+function resetData() {
+
+  if (
+    !confirm(
+      "Reset your entire voting tracker, including accounts and session history?"
+    )
+  ) {
+    return;
+  }
+
+  data = {
+    accounts: [],
+    checks: {},
+    notes: "",
+    sessions: []
+  };
+
+  save();
+
+  updateDisplay();
+}
+
+/* =========================
+   UPDATE EVERYTHING
+========================= */
+
+function updateDisplay() {
+
+  document
+    .querySelectorAll(
+      'input[type="checkbox"][data-check]'
+    )
+    .forEach(box => {
+
+      box.checked =
+        !!data.checks[box.dataset.check];
+    });
+
+  document.getElementById("notes").value =
+    data.notes || "";
+
+  renderAccounts();
+
+  updateStats();
+}
+
+/* =========================
+   START
+========================= */
+
+updateDisplay();
+
+  </script>
